@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.twolz.qiyi.domain.mapper.OperatLogMapper">
+  <resultMap id="BaseResultMap" type="com.twolz.qiyi.domain.model.OperatLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_mobile" jdbcType="VARCHAR" property="userMobile" />
+    <result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
+    <result column="action_url" jdbcType="VARCHAR" property="actionUrl" />
+    <result column="sub_module" jdbcType="VARCHAR" property="subModule" />
+    <result column="module" jdbcType="VARCHAR" property="module" />
+    <result column="mean" jdbcType="VARCHAR" property="mean" />
+    <result column="function" jdbcType="VARCHAR" property="function" />
+    <result column="sub_function" jdbcType="VARCHAR" property="subFunction" />
+    <result column="param_data" jdbcType="VARCHAR" property="paramData" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.twolz.qiyi.domain.mapper.ResourceMapper">
+  <resultMap id="BaseResultMap" type="com.twolz.qiyi.domain.model.Resource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="parent_ids" jdbcType="VARCHAR" property="parentIds" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="sort" jdbcType="VARCHAR" property="sort" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="INTEGER" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <select id="selectAllByUrlNotNull" resultMap="BaseResultMap">
+    select * from sys_resource where status=1 and url!='' and url is not null
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from sys_resource where status=1 order by cast(sort as SIGNED)
+  </select>
+
+  <select id="selectMenuByRoleList" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT  r.*,group_concat(r.id) as ids FROM sys_resource r LEFT JOIN sys_role_resource e ON r.id = e.resource_id LEFT JOIN qds_role s ON e.role_id = s.id WHERE r.status=1 AND s.id in (#{roleIds,jdbcType=VARCHAR}) and r.type = 1 group by id order by r.sort
+  </select>
+
+  <select id="selectByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select r.* from sys_resource r left join sys_role_resource rr on r.id=rr.resource_id where r.status=1 AND rr.role_id =#{roleId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectParentIdsById" parameterType="java.lang.Integer" resultType="java.lang.String" >
+    SELECT
+    SUBSTRING(paths, 2) AS parent_ids
+    FROM
+    (SELECT
+    id,
+    parent_id,
+    @pathlevel:=CONCAT(@pathlevel, '|', id, ':', @le, '|') pathlevel,
+    @pathnodes:=IF(parent_id = 0, '', CONCAT_WS(',', IF(LOCATE(CONCAT('|', parent_id, ':'), @pathall) > 0, SUBSTRING_INDEX(SUBSTRING_INDEX(@pathall, CONCAT('|', parent_id, ':'), - 1), '|', 1), @pathnodes), parent_id)) paths,
+    @pathall:=CONCAT(@pathall, '|', id, ':', @pathnodes, '|') pathall
+    FROM
+    sys_resource, (SELECT @pathlevel:='', @pathall:='', @pathnodes:='') vv
+    ORDER BY parent_id , id) src
+    WHERE
+    id = #{pid,jdbcType=INTEGER}
+    ORDER BY id
+  </select>
+
+  <select id="selectByRoleList" resultMap="BaseResultMap" parameterType="java.util.ArrayList">
+    select distinct r.* from sys_resource r left join sys_role_resource rr on r.id=rr.resource_id  where r.status=1
+    AND rr.role_id IN
+    <foreach item="roleId" index="index" collection="list" open="(" separator="," close=")">
+      #{roleId,jdbcType=INTEGER}
+    </foreach>
+
+  </select>
+</mapper>

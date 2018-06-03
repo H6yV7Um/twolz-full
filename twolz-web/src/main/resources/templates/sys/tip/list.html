@@ -1,0 +1,169 @@
+<html layout:decorator="layout/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <title>提示信息管理</title>
+    <script th:src="@{/js/sys/tip/list.js}" ></script>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <section class="content-header">
+        <h1>提示信息记录</h1>
+        <form action="">
+            <div class="pull-right functionbar">
+                <div class="input-group input-group-inline">
+                    <input class="form-control" type="text" id="searchVal" placeholder="提示信息内容" maxlength="20"/>
+                    <span class="input-group-btn">
+                          <button class="btn btn-info" onclick="searchList()" type="button">
+                              &nbsp;<i class="ion-ios-search"></i>&nbsp;
+                          </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </section>
+    <section class="content">
+        <div id="myTabContent" class="tab-content">
+          <div class="tab-pane fade in active" id="tab_01">
+            <form class="form-horizontal form-search">
+              <div class="row">
+                <div class="col-lg-3 col-md-4">
+                  <div class="form-group">
+                    <label style="float: left;line-height: 35px">提示信息：</label>
+                      <div class="col-sm-8">
+                        <input type="text"  class="form-control" name="title" placeholder="提示信息内容"/>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                  <div class="form-group" style="position: relative;">
+                    <label style="float: left;line-height: 35px">姓名：</label>
+                      <div class="col-sm-8">
+                          <select id="testSl1" style="width: 100%" name="testSl1" class="form-control">
+                              <option value="" >李峰</option>
+                              <option value="" >刘先锋</option>
+                              <option value="" >刘为</option>
+                              <option value="" >李梦秋</option>
+                              <option value="" >唐家三少</option>
+                          </select>    
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                  <div class="form-group" style="position: relative;">
+                    <label style="float: left;line-height: 35px">编号：</label>
+                      <div class="col-sm-8">
+                        <select id="testSl2" style="width: 100%" name="testSl2" class="form-control">
+                          <option value="123" >李峰</option>
+                          <option value="23" >刘先锋</option>
+                          <option value="44" >刘为</option>
+                          <option value="" >李梦秋</option>
+                          <option value="" >唐家三少</option>
+                        </select>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-9 col-md-10 col-lg-offset-3">
+                    <div class="form-group">
+                        <div class="col-sm-12 text-right">
+                            <button type="button" class="btn btn-info" onclick="searchList(this)">查询</button>
+                            <button type="button" class="btn btn-reset" onclick="resetForm(this)">重置</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box-header">
+                        <button type="button" class="btn btn-primary" onclick="toAdd()"><i class="ion-ios-plus-empty"></i>添加</button>
+                    </div>
+                    <div class="box box-round">
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>提示信息编码</th>
+                                    <th>提示信息内容</th>
+                                    <th class="text-center">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody_01">
+                                    <script type="text/html">
+                                        {{each list tab1 index}}
+                                        <tr>
+                                            <td>
+                                                {{pageSize*(page-1) + index + 1}}
+                                            </td>
+                                            <td>{{tab1.tipCode}}</td>
+                                            <td>
+                                                {{tab1.tipMsg}}
+                                            </td>
+                                            <td>
+                                                <div class='icon-flex'>
+                                                    <a  href='javascript:void(0);'  title="查看" onclick="toView({{tab1.id}})" class="btn btn-xs btn-default" >查看</a>
+                                                    <a  href='javascript:void(0);' th:if="${parentComFlag == 1}" title="发放" onclick="toSend({{tab1.id}})" class="btn btn-xs btn-default">发放</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </script>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="box-footer dataTables_paginate"></p>
+                </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- /.content -->
+    <div class="modal fade" id="objInfoModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="objInfoForm" class="form-horizontal" role="form" novalidate="novalidate" name="objInfoForm">
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">编码<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="tipCode" id="tipCode" check-type="required" required-message="请填写编码" class="form-control" placeholder="编码"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">提示内容<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="tipMsg" name="tipMsg" check-type="required" required-message="请填写提示内容" class="form-control" placeholder="提示内容" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="box-footer text-right">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="add" type="button" class="btn btn-info">添加</button>
+                            <button id="update" type="button" class="btn btn-info">修改</button>
+                        </div>
+                        <input type="hidden" id="id" name="id" value=""/>
+                    </form>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+</div>
+</body>
+</html>

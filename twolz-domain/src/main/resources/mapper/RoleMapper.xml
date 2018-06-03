@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.twolz.qiyi.domain.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.twolz.qiyi.domain.model.Role">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_key" jdbcType="VARCHAR" property="roleKey" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="INTEGER" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="role_type" jdbcType="INTEGER" property="roleType" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select r.* from sys_role r left join sys_user_role ur on r.id=ur.role_id where ur.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySearch" resultMap="BaseResultMap">
+    select * from sys_role
+    <where>
+      <if test="searchVal != null and searchVal != ''">
+        and role_name like CONCAT('%','${searchVal}','%')
+      </if>
+    </where>
+  </select>
+
+  <select id="selectIsExistRole" resultType="java.lang.Integer">
+    select count(1) from sys_role where a.role_name = #{roleName}
+  </select>
+
+</mapper>

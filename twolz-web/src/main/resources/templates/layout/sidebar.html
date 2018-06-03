@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+</head>
+<body>
+<aside class="main-sidebar" th:fragment="sidebar">
+    <section class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/main">
+                    <i class="oicon oicon-home"></i> <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="oicon oicon-sysmanager"></i> <span>系统管理</span> <i class="oicon oicon-right pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/sys/user/}"><i class="oicon oicon-account"></i>账号管理</a></li>
+                    <li><a th:href="@{/sys/role/}"><i class="oicon oicon-rolesm"></i>角色管理</a></li>
+                    <li><a th:href="@{/sys/resource/}"><i class="oicon oicon-resourcem"></i>资源管理</a></li>
+                    <!--<li><a th:href="@{/sys/tip/}"><i class="oicon oicon-tipsinfo"></i>提示信息管理</a></li>-->
+                    <!--<li><a th:href="@{/sys/appVersion/}"><i class="oicon oicon-tipsinfo"></i>APP版本管理</a></li>-->
+                    <!--<li><a th:href="@{/sys/param/}"><i class="oicon oicon-qitashezhi"></i>系统参数管理</a></li>-->
+                    <!--<li><a th:href="@{/sys/logManage/}"><i class="oicon oicon-qitashezhi"></i>系统日志管理</a></li>-->
+                    <li><a th:href="@{/sys/user/initPwd}"><i class="oicon oicon-key"></i>密码修改</a></li>
+                </ul>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="oicon oicon-resource"></i> <span>资源管理</span> <i class="oicon oicon-right pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-carmodels"></i>车型管理</a></li>
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-car"></i>车辆管理</a></li>
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-car"></i>车辆发布</a></li>
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-branch"></i>站点管理</a></li>
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-combinedshape"></i>设备管理</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="oicon oicon-resource"></i> <span>监控管理</span> <i class="oicon oicon-right pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/inst/instpage/}"><i class="oicon oicon-car"></i>远程控制</a></li>
+                    <li><a th:href="@{/release/gridEnable/}"><i class="oicon oicon-remote"></i>车辆定位</a></li>
+                    <li><a th:href="@{/release/gridEnable/}"><i class="oicon oicon-remote"></i>车辆预警</a></li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+</body>
+</html>

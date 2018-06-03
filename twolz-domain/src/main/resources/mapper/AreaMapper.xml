@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.twolz.qiyi.domain.mapper.AreaMapper">
+  <resultMap id="BaseResultMap" type="com.twolz.qiyi.domain.model.Area">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="area_code" jdbcType="INTEGER" property="areaCode" />
+    <result column="parent_code" jdbcType="INTEGER" property="parentCode" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+    <result column="is_use" jdbcType="INTEGER" property="isUse" />
+    <result column="index_path" jdbcType="VARCHAR" property="indexPath" />
+    <result column="name_path" jdbcType="VARCHAR" property="namePath" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="INTEGER" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,101 @@
+server:
+  port: 8081
+  max-http-header-size: 1048576
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.twolz.yiqi: DEBUG
+
+spring:
+  application:
+    name: twolz-api
+  profiles.active: dev,common_dev
+
+---
+spring:
+  profiles: dev
+  datasource:
+    # 使用druid数据源
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/twolz?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: 123
+      max-active: 20
+      initial-size: 1
+      min-idle: 3
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: stat,wall,slf4j
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
+      useGlobalDataSourceStat: true
+    # Redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+    #dubbo服务
+  dubbo:
+    appname: twolz-api
+    protocol: dubbo
+    port: 20881
+    version: 1.0.0
+    registry: zookeeper://127.0.0.1:2181
+
+swagger:
+  enable: true
+  title: 用户API接口
+  description: 用户API接口定义文档.
+  version: 1.0
+  license: Apache License, Version 2.0
+  licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
+  base-package: com.twolz.qiyi
+  base-path: /**
+  ignored-parameter-types[0]: com.twolz.qiyi.common.dto.CurrentUserInfo
+
+mapper:
+  mappers: tk.mybatis.mapper.common.Mapper
+  not-empty: true
+mybatis:
+  type-aliases-package: com.twolz.qiyi.domain.model.**
+  mapper-locations: classpath:mapper/*.xml
+
+
+system:
+  api:
+    token:
+      #token密钥
+      app-secret: 63YUQdYDOazpqQ34aTJHolDGBpskBY
+      #token签名
+      app-issuer: twolz
+
+---
+spring:
+  profiles: common_dev
+system:
+  common:
+    #OSS访问域名
+    imgs-domain: http://stest.twolz.com/
+    #OSS配置
+    alyunoss: ALIYUNOSS_TEST
+    #本地文件访问域名
+    imgs-localhost-domain: http://127.0.0.1:${server.port}/file
+    #本地图片存放路径
+    img-root: /Users/daer/webdata/imgs/user/
+    #本地文件存放路径
+    file-root: /Users/daer/webdata/files/user/
+    #短信发送间隔时间(单位秒)
+    sms-duration: 60
+    #用户一天发送短信最大条数
+    sms-today-limit: 10
+    #短信有效期(单位秒)
+    sms-valid-time: 1800
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.twolz.qiyi.domain.mapper.RoleResourceMapper">
+  <resultMap id="BaseResultMap" type="com.twolz.qiyi.domain.model.RoleResource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
+  </resultMap>
+</mapper>

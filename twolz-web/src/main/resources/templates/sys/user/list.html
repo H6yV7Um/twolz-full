@@ -1,0 +1,165 @@
+<html layout:decorator="layout/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <title>账户列表</title>
+    <script th:src="@{/js/sys/user/adminUser.js}" ></script>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            账号列表
+        </h1>
+        <form action="">
+            <div class="pull-right functionbar">
+                <div class="input-group input-group-inline">
+                    <input class="form-control" type="text" id="searchVal" placeholder="用户名，真实姓名" maxlength="20"/>
+                    <span class="input-group-btn">
+                          <button class="btn btn-info" onclick="searchList()" type="button">
+                              &nbsp;<i class="ion-ios-search"></i>&nbsp;
+                          </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-round">
+                    <div class="box-header">
+                        <button type="button" onclick="initAddSysUser()" class="btn btn-primary"><i class="ion-ios-plus-empty"></i>添加</button>
+                    </div>
+                    <div class="box-body no-padding">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>用户名</th>
+                                <th>真实姓名</th>
+                                <th>状态</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="adminUserList">
+                            <script id="tpl-userlist" type="text/html">
+                                {{each list item index}}
+                                <tr>
+                                    <td>{{startRow + index}}</td>
+                                    <td>{{item.mobile}}</td>
+                                    <td>{{item.realName}}</td>
+                                    <td>{{item.status == 1? "正常":"停用"}}</td>
+                                    <td><div class='icon-flex'><a href='javascript:void(0);' title='编辑' onclick='initEditSysUser({{item.id}})'><i class='oicon oicon-edit'></i></a><a href='javascript:void(0);' title='删除' onclick='deleteUser({{item.id}})'><i class='oicon oicon-del'></i></a></div></td>
+                                </tr>
+                                {{/each}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <p id="adminUserListPagination"  class="box-footer dataTables_paginate"></p>
+                <!-- /.box -->
+            </div>
+
+        </div>
+    </section>
+    <!-- /.content -->
+    <div class="modal fade" id="adminUserModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="form-modal" >
+                <script id="tpl-userform" type="text/html">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        {{if add}}
+                        <h4 class="modal-title" >添加</h4>
+                        {{else}}
+                        <h4 class="modal-title" >修改</h4>
+                        {{/if}}
+                    </div>
+                    <div class="modal-body">
+                        <form id="adminUserForm" class="form-horizontal" role="form" novalidate="novalidate" name="adminUserForm">
+                                <div class="box-body">
+                                    <input type="hidden" name="userId"  value="{{id}}" id="userId"   />
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">用户名<i style="color: red">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="mobile" id="mobile" check-type="required mobile" required-message="请填写手机号码" value="{{mobile}}" class="form-control" maxlength="11" placeholder="手机号码" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">真实姓名<i style="color: red">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="realName" name="realName" check-type="required" required-message="请填写真实姓名" value="{{realName}}" class="form-control" maxlength="20" placeholder="真实姓名" autocomplete="clear" />
+                                        </div>
+                                    </div>
+                                    {{if add}}
+                                    <div class="form-group" id="passwdLab">
+                                        <label class="col-sm-3 control-label">密码<i style="color: red">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="passwd" name="passwd" check-type="required char_number" minlength="8" required-message="请填写密码" class="form-control" placeholder="密码" maxlength="20" autocomplete="clear" />
+                                        </div>
+                                    </div>
+                                    {{/if}}
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">角色选择<i style="color: red">*</i></label>
+                                        <div class="col-sm-9">
+                                            <select id="roleSel" style="width: 100%" multiple="multiple" name="roleSel" value="{{roles}}" class="form-control" check-type="required" required-message="">
+                                                <option th:each="role:${roleList}"
+                                                        th:value="${role.id}"
+                                                        th:text="${role.roleName}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">状态<i style="color: red">*</i></label>
+                                        <div class="col-sm-9">
+                                            <div class="radio">
+                                                <label>
+                                                    {{if state==1}}
+                                                    <input type="radio" value="1" id="available" name="status" checked="checked" />
+                                                    {{else}}
+                                                    <input type="radio" value="1" id="available" name="status" />
+                                                    {{/if}}
+                                                    启用
+                                                </label>
+                                                <label>
+                                                    {{if state==0}}
+                                                    <input type="radio" value="0" id="unAvailable" name="status" checked="checked" />
+                                                    {{else}}
+                                                    <input type="radio" value="0" id="unAvailable" name="status"  />
+                                                    {{/if}}
+                                                    未启用
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer text-right">
+                                    <button  type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    {{if add}}
+                                    <button id="addSysUser" type="button" class="btn btn-info">添加</button>
+                                    {{else}}
+                                    <button id="updateSysUser" type="button" class="btn btn-info">修改</button>
+                                    {{/if}}
+                                </div>
+
+                        </form>
+                        <input type="hidden" id="id" value=""/>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+</div>
+</body>
+</html>

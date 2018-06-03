@@ -1,0 +1,72 @@
+server:
+  port: 8080
+  max-http-header-size: 1048576
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.twolz.qiyi: DEBUG
+
+spring:
+  application:
+    name: twolz-api
+  profiles.active: dev,common_dev
+  mvc:
+    throw-exception-if-no-handler-found: true
+  thymeleaf:
+    enabled: true
+    cache: false
+---
+spring:
+  profiles: dev
+  datasource:
+    # 使用druid数据源
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/twolz?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: 123
+      max-active: 20
+      initial-size: 1
+      min-idle: 3
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: stat,wall,slf4j
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
+      useGlobalDataSourceStat: true
+  # Redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+
+mapper:
+  mappers: tk.mybatis.mapper.common.Mapper
+  not-empty: true
+mybatis:
+  type-aliases-package: com.twolz.qiyi.domain.model.**
+  mapper-locations: classpath:mapper/*.xml
+
+---
+spring:
+  profiles: common_dev
+system:
+  common:
+    #OSS访问域名
+    imgs-domain: http://d-img.test.cn/
+    #OSS配置
+    alyunoss: ALIYUNOSS_TEST
+    #短信发送间隔时间(单位秒)
+    sms-duration: 60
+    #用户一天发送短信最大条数
+    sms-today-limit: 10
+    #短信有效期(单位秒)
+    sms-valid-time: 1800
+

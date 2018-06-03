@@ -1,0 +1,73 @@
+<html layout:decorator="layout/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <title>意见反馈列表</title>
+    <script th:src="@{/js/sys/userfeedback.js}" ></script>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <section class="content-header">
+        <h1>意见反馈列表</h1>
+        <form action="">
+            <div class="pull-right functionbar">
+                <div class="input-group input-group-inline">
+                    <input class="form-control" type="text" id="searchVal" placeholder="请输入用户姓名或电话" maxlength="20"/>
+                    <span class="input-group-btn">
+                          <button class="btn btn-info" onclick="searchList()" type="button">
+                              &nbsp;<i class="ion-ios-search"></i>&nbsp;
+                          </button>
+                        </span>
+                </div>
+            </div>
+        </form>
+    </section>
+    <section class="content">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="tab_01">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box-header">
+                        </div>
+                        <div class="box box-round">
+                            <div class="box-body no-padding">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>创建时间</th>
+                                        <th>用户姓名</th>
+                                        <th>联系方式</th>
+                                        <th>内容</th>
+                                        <th>图片</th>
+                                        <th>备注</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody_01">
+                                    <script id="tpl-product-list" type="text/html">
+                                        {{each list item index}}
+                                        <tr>
+                                            <td>{{pageSize*(page-1) + index + 1}}</td>
+                                            <td>{{item.createTime}}</td>
+                                            <td>{{item.userName}}</td>
+                                            <td>{{item.userMobile}}</td>
+                                            <td>{{item.content}}</td>
+                                            <td>{{item.imgs}}</td>
+                                            <td>{{item.remark}}</td>
+                                        </tr>
+                                        {{/each}}
+                                    </script>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p class="box-footer dataTables_paginate"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

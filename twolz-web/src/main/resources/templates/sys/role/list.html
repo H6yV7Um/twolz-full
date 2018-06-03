@@ -1,0 +1,178 @@
+<html layout:decorator="layout/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <title>角色列表</title>
+    <link rel="stylesheet"  th:href="@{/plugins/jstree/themes/default/style.min.css}"/>
+    <script th:src="@{/plugins/jstree/jstree.min.js}"></script>
+    <script th:src="@{/js/sys/role/role.js}"></script>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+
+    <section class="content-header">
+        <h1>
+            角色列表
+        </h1>
+        <div class="pull-right functionbar">
+            <div class="input-group input-group-inline">
+                <input class="form-control" type="text" id="searchVal" placeholder="角色名称" maxlength="20"/>
+                <span class="input-group-btn">
+                      <button class="btn btn-info" type="button" onclick="initRoleList();">
+                          &nbsp;<i class="ion-ios-search"></i>&nbsp;
+                      </button>
+                    </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-round">
+                    <div class="box-header">
+                        <button type="button" onclick="initAdd()" class="btn btn-primary"><i class="ion-ios-plus-empty"></i>添加</button>
+                    </div>
+                    <div class="box-body no-padding">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>角色名</th>
+                                <th>状态</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody_01">
+                            <script type="text/html">
+                                {{each list role index}}
+                                <tr>
+                                    <td>
+                                        {{pageSize*(page-1) + index + 1}}
+                                    </td>
+                                    <td>{{role.roleName}}</td>
+                                    <td>
+                                        {{if role.available ==1}}
+                                            启用
+                                        {{else}}
+                                            未启用
+                                        {{/if}}
+                                    </td>
+                                    <td>
+                                        <div class='icon-flex'>
+                                            <a href="javascript:void(0);" onclick="initEdit({{role.id}})"><i class='oicon oicon-edit'></i></a>
+                                            <a href="javascript:void(0);" onclick="initGrantFun({{role.id}})"><i class='oicon oicon-auth'></i></a>
+                                            <a href='javascript:void(0);' onclick='deleteRole({{role.id}})'><i class='oicon oicon-del'></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <p id="roleListPagination"  class="box-footer dataTables_paginate"></p>
+                <!-- /.box -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 修改，添加 Modal -->
+    <div class="modal fade" id="roleModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">添加角色信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="roleForm" class="form-horizontal" role="form" novalidate="novalidate" name="roleForm">
+                        <input type="hidden" value="2" id="roleType" name="roleType" />
+                        <div class="box-body">
+                            <input type="hidden" id="roleId" name="roleId"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">角色名<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="roleName" id="roleName" check-type="required"
+                                           required-message="请填写角色名" class="form-control" maxlength="20"
+                                           placeholder="请填写角色名" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">状态<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" value="1" id="available" name="available" />
+                                            启用
+                                        </label>
+                                        <label>
+                                            <input type="radio" value="0" id="unAvailable" name="available" />
+                                            未启用
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="add" type="button" class="btn btn-info">添加</button>
+                            <button id="update" type="button" class="btn btn-info">修改</button>
+                        </div>
+                    </form>
+                    <input type="hidden" id="id" value=""/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+
+    <div class="modal fade" id="resourcesTreeModel" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content message_align">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="resourceModelLabel">角色授权</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form class="form-horizontal">
+                        <input type="hidden" id="treeRoleId" name="treeRoleId" />
+                        <div class="form-group">
+                            <div class="col-sm-8">
+                                <div class="panel panel-default" style=" height:450px;overflow:auto;" >
+                                    <div id="resourcesTree" class="jstree-default"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 flex-column">
+                                <br/><br/><br/><br/>
+                                <input type="button" onclick="checkAllTree()" class="btn btn-info btn-sm" value="全选" />
+                                <input type="button" onclick="uncheckAllTree()" class="btn btn-default btn-sm" value="取消" />
+                                <br/><br/><br/><br/>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <input id="userRoleId" type="hidden"/>
+                            <input id="userRoleName" type="hidden"/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="updateResource" type="button" onclick="grantFun()" class="btn btn-info">授权</button>
+                        </div>
+                    </form>
+                    <!--<div id="result"></div>-->
+                </div>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+</body>
+</html>

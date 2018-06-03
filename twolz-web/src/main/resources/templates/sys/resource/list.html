@@ -1,0 +1,182 @@
+<html  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" layout:decorator="layout/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <title>资源列表</title>
+    <link rel="stylesheet" th:href="@{/plugins/jquery-treegrid/css/jquery.treegrid.css}" />
+    <!--<link rel="stylesheet" th:href="@{/plugins/jquery-ztree/css/zTreeStyle/zTreeStyle.css}" />-->
+    <!-- ztree -->
+    <link rel="stylesheet" th:href="@{/plugins/jquery-ztree/css/metroStyle/metroStyle.css}" />
+    <script th:src="@{/plugins/jquery-ztree/js/jquery.ztree.core.min.js}"></script>
+    <script th:src="@{/plugins/jquery-ztree/js/jquery.ztree.excheck.min.js}"></script>
+
+    <script th:src="@{/plugins/jquery-treegrid/js/jquery.treegrid.js}"></script>
+    <script th:src="@{/plugins/jquery-treegrid/js/jquery.treegrid.bootstrap3.js}"></script>
+    <!--<script th:src="@{/plugins/jquery-ztree/js/jquery.ztree.core.js}"></script>-->
+    <script th:src="@{/js/sys/resource/resource.js}"></script>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            资源管理
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box  box-round">
+                    <div class="box-header">
+                        <button type="button" onclick="initAdd(1)" class="btn btn-primary"><i class="ion-ios-plus-empty"></i>添加</button>
+                    </div>
+                    <!--资源树表-->
+                    <div class="box-body no-padding">
+                        <table id="resourceTreeTable" class="table table-striped ">
+                            <thead>
+                            <tr>
+                                <th>资源名</th>
+                                <th>链接</th>
+                                <th>权限标识</th>
+                                <th>排序</th>
+                                <th>类型</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="treeTableTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="selectGroup" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">创建资源信息</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="resourceForm" class="form-horizontal" role="form" novalidate="novalidate" name="roleForm">
+                        <div class="box-body">
+                            <input type="hidden" name="resourceId" id="resourceId" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">资源名<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="resourceName" id="resourceName" check-type="required"
+                                           required-message="请填写资源名" class="form-control" maxlength="100"
+                                           placeholder="请填写资源名"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">url<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="url" id="url" check-type="required"
+                                           required-message="请填写url地址" class="form-control" maxlength="100"
+                                           placeholder="请填写url地址" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">权限<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="permission" id="permission" check-type="required"
+                                           required-message="请填写对应权限" class="form-control" maxlength="100"
+                                           placeholder="请填写对应权限"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">排序<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="sort" id="sort" check-type="required"
+                                           required-message="" class="form-control" maxlength="20"
+                                           placeholder=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">父级菜单<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly="readonly" name="parentId" data-id="" id="parentId" check-type="required" class="form-control" maxlength="20" placeholder="" onclick="showTreeMenu()"/>
+                                    <ul id="menuTree" class="ztree ztreefixed"></ul>
+                                    <!--
+                                    <select style="width: 100%" class="form-control" id="parentId">
+                                        <option th:each="resource:${resource}"
+                                                th:value="${resource.id}"
+                                                th:text="${resource.name}">
+                                        </option>
+                                    </select>
+                                    -->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">类型<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <select style="width: 100%" class="form-control" id="type">
+                                        <option value="1">菜单</option>
+                                        <option value="2">按钮</option>
+                                        <option value="3">超链接</option>
+                                        <option value="4">列表</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">状态<i style="color: red">*</i></label>
+                                <div class="col-sm-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" checked="checked" value="1" id="available" name="available" />
+                                            启用
+                                        </label>
+                                        <label>
+                                            <input type="radio"  value="0" id="unAvailable" name="available" />
+                                            未启用
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="menuContent" class="menuContent" tabindex="2" style="display:none; position: absolute;">
+                                <ul id="treeDemo" class="ztree" style="margin-top:0; width:222px;"></ul>
+                            </div>
+                        </div>
+                        <div class="box-footer text-right">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="add" type="button" class="btn btn-info">添加</button>
+                            <button id="update" type="button" class="btn btn-info">修改</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 信息删除确认 -->
+    <div class="modal fade" id="delcfmModel">
+        <div class="modal-dialog">
+            <div class="modal-content message_align">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center;font-size: 30px;">您确认要删除吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="delid"/>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <a onclick="urlSubmit()" class="btn true-color" style="color: #444444;" data-dismiss="modal">确定</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+</body>
+</html>

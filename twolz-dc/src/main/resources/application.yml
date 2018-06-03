@@ -1,0 +1,123 @@
+server:
+  port: 8082
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.twolz.qiyi: DEBUG
+
+spring:
+  application:
+    name: twolz-dc
+  profiles.active: dev,common_dev
+
+---
+spring:
+  profiles: dev
+  datasource:
+    # 使用druid数据源
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/twolz?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: 123
+      max-active: 20
+      initial-size: 1
+      min-idle: 3
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: stat
+    # Redis
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/twolz
+  # Redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+  dubbo:
+    appname: twolz-dc
+    protocol: dubbo
+    port: 20882
+    version: 1.0.0
+    registry: zookeeper://127.0.0.1:2181
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    listener:
+      concurrency: 3
+    consumer:
+      group-id: myGroup
+      key-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+
+swagger:
+  enable: true
+  title: DC - API接口
+  description: DC - API接口定义文档.
+  version: 1.0
+  license: Apache License, Version 2.0
+  licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
+  base-package: com.twolz.qiyi
+  base-path: /**
+  ignored-parameter-types[0]: com.twolz.qiyi.common.dto.CurrentUserInfo
+
+mapper:
+  mappers: tk.mybatis.mapper.common.Mapper
+  not-empty: true
+mybatis:
+  type-aliases-package: com.twolz.qiyi.domain.model.**
+  mapper-locations: classpath:mapper/*.xml
+
+
+system:
+  #锐琪配置
+  rokyinfo:
+    #是否主动拉去最新上报数据
+    pull-state: false
+    #用户名
+    user-name: wanda
+    #密码
+    password: E10ADC3949BA59ABBE56E057F20F883E
+    #锐琪车辆中心token
+    token: d2FuZGE6RTEwQURDMzk0OUJBNTlBQkJFNTZFMDU3RjIwRjg4M0U=
+    #访问地址
+    host1: https://exchange.rokyinfo.net
+    #访问地址2
+    host2: https://exchange2.rokyinfo.net
+    #端口
+    port: 80
+    #消费api路径
+    path: SpiritServiceApp/v1/receivedCache/ebikes
+
+---
+spring:
+  profiles: common_dev
+system:
+  common:
+    #OSS访问域名
+    imgs-domain: http://stest.twolz.com/
+    #OSS配置
+    alyunoss: ALIYUNOSS_TEST
+    #本地文件访问域名
+    imgs-localhost-domain: http://192.168.0.30:${server.port}/file
+    #本地图片存放路径
+    img-root: /Users/daer/webdata/imgs/user/
+    #本地文件存放路径
+    file-root: /Users/daer/webdata/files/user/
+    #短信发送间隔时间(单位秒)
+    sms-duration: 60
+    #用户一天发送短信最大条数
+    sms-today-limit: 10
+    #短信有效期(单位秒)
+    sms-valid-time: 1800
